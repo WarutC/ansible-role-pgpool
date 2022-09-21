@@ -213,7 +213,7 @@ syslog_ident = '{{ pgpool_syslog_ident }}'
 
 log_error_verbosity = {{ pgpool_log_error_verbosity }}          # terse, default, or verbose messages
 
-client_min_messages = {{ pgpool_client_min_messages }}            
+client_min_messages = {{ pgpool_client_min_messages }}
                                     # values in order of decreasing detail:
                                     #   debug5
                                     #   debug4
@@ -369,7 +369,7 @@ statement_level_load_balance = {{ pgpool_statement_level_load_balance }}
 #------------------------------------------------------------------------------
 # MASTER/SLAVE MODE
 #------------------------------------------------------------------------------
-# https://www.pgpool.net/docs/latest/en/html/runtime-streaming-replication-check.html 
+# https://www.pgpool.net/docs/latest/en/html/runtime-streaming-replication-check.html
 
 master_slave_mode = {{ pgpool_master_slave_mode }}
                                    # Activate master/slave mode
@@ -577,26 +577,37 @@ ping_path = '{{ ppgool_ping_path }}'
 
 # - Watchdog communication Settings -
 
-wd_hostname = '{{ pgpool_wd_hostname }}'
+# wd_hostname = '{{ pgpool_wd_hostname }}'
                                     # Host name or IP address of this watchdog
                                     # (change requires restart)
-wd_port = {{ pgpool_wd_port }}
+# wd_port = {{ pgpool_wd_port }}
                                     # port number for watchdog service
                                     # (change requires restart)
-wd_priority = {{ pgpool_wd_priority }}
+# wd_priority = {{ pgpool_wd_priority }}
                                     # priority of this watchdog in leader election
                                     # (change requires restart)
 
-wd_authkey = '{{ pgpool_authkey }}'
+# wd_authkey = '{{ pgpool_authkey }}'
                                     # Authentication key for watchdog communication
                                     # (change requires restart)
 
-wd_ipc_socket_dir = '{{ pgpool_wd_ipc_socket_dir }}'
+# wd_ipc_socket_dir = '{{ pgpool_wd_ipc_socket_dir }}'
                                     # Unix domain socket path for watchdog IPC socket
                                     # The Debian package defaults to
                                     # /var/run/postgresql
                                     # (change requires restart)
 
+hostname0 = '192.168.99.45'
+wd_port0 = 9000
+pgpool_port0 = 9999
+
+hostname1 = '192.168.99.46'
+wd_port1 = 9000
+pgpool_port1 = 9999
+
+hostname2 = '192.168.99.47'
+wd_port2 = 9000
+pgpool_port2 = 9999
 
 # - Virtual IP control Setting -
 
@@ -698,9 +709,9 @@ wd_heartbeat_deadtime = {{ pgpool_wd_heartbeat_deadtime }}
 
 {% if pgpool_heartbeat_destination | length > 0 %}
 {% for server in pgpool_heartbeat_destination %}
-heartbeat_destination{{ loop.index0 }} = '{{ server.hostname | mandatory }}'
-heartbeat_destination_port{{ loop.index0 }} = '{{ server.port | default(pgpool_wd_heartbeat_port) }}'
-heartbeat_device{{ loop.index0 }} = '{{ server.device | default('') }}'
+heartbeat_hostname{{ loop.index0 }} = '{{ server.hostname | mandatory }}'
+heartbeat_port{{ loop.index0 }} = '{{ server.port | default(pgpool_wd_heartbeat_port) }}'
+heartbeat_device{{ loop.index0 }} = ''
 {% endfor %}
 {% endif %}
 
@@ -708,7 +719,7 @@ heartbeat_device{{ loop.index0 }} = '{{ server.device | default('') }}'
                                     # Host name or IP address of destination 0
                                     # for sending heartbeat signal.
                                     # (change requires restart)
-#heartbeat_destination_port0 = 9694 
+#heartbeat_destination_port0 = 9694
                                     # Port number of destination 0 for sending
                                     # heartbeat signal. Usually this is the
                                     # same as wd_heartbeat_port.
@@ -749,6 +760,7 @@ wd_lifecheck_password = '{{ pgpool_wd_lifecheck_password }}'
 other_pgpool_hostname{{ loop.index0 }} = {{ server.hostname | mandatory }}
 other_pgpool_port{{ loop.index0 }} = {{ server.port | default(pgpool_port) }}
 other_wd_port{{ loop.index0 }} = {{ server.wd_port | default(pgpool_wd_port) }}
+
 {% endfor %}
 {% endif %}
 
@@ -767,7 +779,7 @@ other_wd_port{{ loop.index0 }} = {{ server.wd_port | default(pgpool_wd_port) }}
 #------------------------------------------------------------------------------
 # OTHERS
 #------------------------------------------------------------------------------
-relcache_expire = {{ pgpool_relcache_expire }}
+# relcache_expire = {{ pgpool_relcache_expire }}
                                    # Life time of relation cache in seconds.
                                    # 0 means no cache expiration(the default).
                                    # The relation cache is used for cache the
@@ -783,30 +795,30 @@ relcache_expire = {{ pgpool_relcache_expire }}
                                    # For this purpose, cache_expiration
                                    # controls the life time of the cache.
 
-relcache_size = {{ pgpool_relcache_size }}
+# relcache_size = {{ pgpool_relcache_size }}
                                    # Number of relation cache
                                    # entry. If you see frequently:
                                    # "pool_search_relcache: cache replacement happend"
                                    # in the pgpool log, you might want to increate this number.
 
-check_temp_table = {{ pgpool_check_temp_table }}
+# check_temp_table = {{ pgpool_check_temp_table }}
                                    # Temporary table check method. catalog, trace or none.
                                    # Default is catalog.
 
-check_unlogged_table = {{ pgpool_check_unlogged_table }}
+# check_unlogged_table = {{ pgpool_check_unlogged_table }}
                                    # If on, enable unlogged table check in SELECT statements.
                                    # This initiates queries against system catalog of primary/master
                                    # thus increases load of master.
                                    # If you are absolutely sure that your system never uses unlogged tables
                                    # and you want to save access to primary/master, you could turn this off.
                                    # Default is on.
-enable_shared_relcache = {{ pgpool_enable_shared_relcache }}
+# enable_shared_relcache = {{ pgpool_enable_shared_relcache }}
                                    # If on, relation cache stored in memory cache,
                                    # the cache is shared among child process.
                                    # Default is on.
                                    # (change requires restart)
 
-relcache_query_target = {{ pgpool_relcache_query_target }} 
+# relcache_query_target = {{ pgpool_relcache_query_target }}
                                    # Target node to send relcache queries. Default is master (primary) node.
                                    # If load_balance_node is specified, queries will be sent to load balance node.
 #------------------------------------------------------------------------------

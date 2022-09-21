@@ -2,66 +2,66 @@
 pgpool:
   hosts:
     pgpool01:
-      ansible_host: 192.168.56.10
+      ansible_host: 192.168.99.45
       pgpool_wd_hostname: pgsql01
       pgpool_wd_priority: 1
       # watchdog
       pgpool_heartbeat_destination:
         - hostname: pgsql02
         - hostname: pgsql03
-      pgpool_other_settings: 
+      pgpool_other_settings:
         - hostname: pgsql02
         - hostname: pgsql03
     pgpool02:
-      ansible_host: 192.168.56.11
+      ansible_host: 192.168.99.46
       pgpool_wd_hostname: pgsql02
       pgpool_wd_priority: 2
       # watchdog
       pgpool_heartbeat_destination:
         - hostname: pgsql01
         - hostname: pgsql03
-      pgpool_other_settings: 
+      pgpool_other_settings:
         - hostname: pgsql01
         - hostname: pgsql03
     pgpool03:
-      ansible_host: 192.168.56.12
+      ansible_host: 192.168.99.47
       pgpool_wd_hostname: pgsql03
       pgpool_wd_priority: 3
       # watchdog
       pgpool_heartbeat_destination:
         - hostname: pgsql01
         - hostname: pgsql02
-      pgpool_other_settings: 
+      pgpool_other_settings:
         - hostname: pgsql01
         - hostname: pgsql02
   vars:
     pgpool_postgresql_version: 12
     # .pcpass file
-    pgpool_pcppass_entries: 
+    pgpool_pcppass_entries:
       - hostname: pgsql01
-        port: 9898
+        port: 9999
         user: pgpool
-        password: pgpool
+        password: asdfasdfasdf
       - hostname: pgsql02
-        port: 9898
+        port: 9999
         user: pgpool
-        password: pgpool
+        password: asdfasdfasdf
       - hostname: pgsql03
-        port: 9898
+        port: 9999
         user: pgpool
-        password: pgpool
-      - hostname: "{{ pgpool_pcp_socket_dir }}" # allows using -h /var/run/pcp instead of 'localhost' 
-        port: 9898
+        password: asdfasdfasdf
+      - hostname: "{{ pgpool_pcp_socket_dir }}" # allows using -h /var/run/pcp instead of 'localhost'
+        port: 9999
         user: pgpool
-        password: pgpool
+        password: asdfasdfasdf
       - hostname: 127.0.0.1
-        port: 9898
+        port: 9999
         user: pgpool
-        password: pgpool
+        password: asdfasdfasdf
     # pool_passwd
-    pgpool_passwd_users_md5: 
-      - username: admin
-        password: secret
+    pgpool_passwd_users_md5:
+      - username: postgres
+        password: asdfasdfasdf
     # backend settings
     pgpool_backend_servers:
       - hostname: pgsql01
@@ -82,13 +82,18 @@ pgpool:
         data_directory: "{{ pgpool_postgresql_data_directory }}"
         flag: ALLOW_TO_FAILOVER
         application_name: pgsql03
-    # authentication 
+    # authentication
     pgpool_enable_pool_hba: on
     pgpool_pool_hba_entries:
       - type: host
         database: all
         user: admin
-        address: 192.168.56.0/24
+        address: 192.168.99.0/24
+        method: trust
+      - type: host
+        database: all
+        user: all
+        address: 172.26.0.0/16
         method: trust
     # logs
     pgpool_log_hostname: 'on'
@@ -113,7 +118,7 @@ pgpool:
     # running mode
     pgpool_sr_check_user: repmgr
     pgpool_sr_check_database: repmgr
-    pgpool_follow_master_command: "{{ pgpool_home_directory }}/follow_master.sh %d %h %p %D %m %H %M %P %r %R %N %S"
+    pgpool_follow_master_command: "{{ pgpool_home_directory }}/follow_primary.sh %d %h %p %D %m %H %M %P %r %R %N %S"
     # HEALTH CHECK GLOBAL PARAMETERS
     pgpool_health_check_period: 10
     pgpool_health_check_timeout: 20
@@ -127,11 +132,11 @@ pgpool:
     pgpool_failover_on_backend_error: 'off'
     pgpool_auto_failback: 'on'
     # Watchdog
-    pgpool_delegate_IP: 192.168.56.30
+    pgpool_delegate_IP: 192.168.99.44
     pgpool_use_watchdog: 'on'
-    pgpool_if_up_cmd: /usr/bin/sudo {{ pgpool_if_cmd_path }}/ip addr add $_IP_$/24 dev eth1 label eth1:0
-    pgpool_if_down_cmd: /usr/bin/sudo {{ pgpool_if_cmd_path }}/ip addr del $_IP_$/24 dev eth1
-    pgpool_arping_cmd: /usr/bin/sudo {{ pgpool_arping_path }}/arping -U $_IP_$ -w 1 -I eth1
+    pgpool_if_up_cmd: /usr/bin/sudo {{ pgpool_if_cmd_path }}/ip addr add $_IP_$/24 dev eth0 label eth0:0
+    pgpool_if_down_cmd: /usr/bin/sudo {{ pgpool_if_cmd_path }}/ip addr del $_IP_$/24 dev eth0
+    pgpool_arping_cmd: /usr/bin/sudo {{ pgpool_arping_path }}/arping -U $_IP_$ -w 1 -I eth0
     # Online Recovery
     pgpool_recovery_user: postgres
     pgpool_recovery_password: ''

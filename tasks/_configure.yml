@@ -1,6 +1,6 @@
 ---
 - name: Configure | Generated hashed passwords for Ansible
-  set_fact: 
+  set_fact:
     pgpool_password_hashed: "{{ pgpool_password_cleartext | password_hash('sha512') }}"
     pgpool_postgres_password_hashed: "{{ pgpool_postgres_password_cleartext | password_hash('sha512') }}"
 
@@ -68,8 +68,8 @@
     owner: "{{ pgpool_user }}"
     group: "{{ pgpool_group }}"
     mode: 0775
-  when: 
-    - pgpool_enable_pool_hba | bool 
+  when:
+    - pgpool_enable_pool_hba | bool
     - pgpool_pool_hba_entries | length > 0
 
 - name: Configure | Upload pcp.conf
@@ -123,10 +123,10 @@
     group: "{{ pgpool_group }}"
     mode: 0600
 
-- name: Configure | Generate pool_passwd file using md5 auth method
-  shell:
-    cmd: |
-      pg_md5 --md5auth --username={{ item.username }} {{ item.password }}
-  loop: "{{ pgpool_passwd_users_md5 }}"
-  when: pgpool_passwd_use_md5 | bool
-  become_user: "{{ pgpool_user }}"
+# - name: Configure | Generate pool_passwd file using md5 auth method
+#   shell:
+#     cmd: |
+#       pg_md5 --md5auth --username={{ item.username }} {{ item.password }}
+#   loop: "{{ pgpool_passwd_users_md5 }}"
+#   when: pgpool_passwd_use_md5 | bool
+#   become_user: "{{ pgpool_user }}"
