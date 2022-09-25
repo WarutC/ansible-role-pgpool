@@ -85,7 +85,7 @@ backend_application_name{{ loop.index0 }} = '{{ server.application_name }}'
 #backend_flag0 = 'ALLOW_TO_FAILOVER'
                                    # Controls various backend behavior
                                    # ALLOW_TO_FAILOVER, DISALLOW_TO_FAILOVER
-                                   # or ALWAYS_MASTER
+                                   # or ALWAYS_PRIMARY
 #backend_application_name0 = 'server0'
                                    # walsender's application_name, used for "show pool_nodes" command
 
@@ -320,16 +320,16 @@ load_balance_mode = {{ pgpool_load_balance_mode }}
                                    # (change requires restart)
 ignore_leading_white_space = {{ pgpool_ignore_leading_white_space }}
                                    # Ignore leading white spaces of each query
-white_function_list = '{{ pgpool_white_function_list }}'
+read_function_list = '{{ pgpool_read_function_list }}'
                                    # Comma separated list of function names
                                    # that don't write to database
                                    # Regexp are accepted
-black_function_list = '{{ pgpool_black_function_list }}'
+write_function_list = '{{ pgpool_write_function_list }}'
                                    # Comma separated list of function names
                                    # that write to database
                                    # Regexp are accepted
 
-black_query_pattern_list = '{{ pgpool_black_query_pattern_list }}'
+primary_routing_query_pattern_list = '{{ pgpool_primary_routing_query_pattern_list }}'
                                    # Semicolon separated list of query patterns
                                    # that should be sent to primary node
                                    # Regexp are accepted
@@ -405,7 +405,7 @@ delay_threshold = {{ pgpool_delay_threshold }}
 
 # - Special commands -
 
-follow_master_command = '{{ pgpool_follow_master_command }}'
+follow_primary_command = '{{ pgpool_follow_primary_command }}'
                                    # Executes this command after master failover
                                    # Special values:
                                    #   %d = failed node id
@@ -597,18 +597,12 @@ ping_path = '{{ ppgool_ping_path }}'
                                     # /var/run/postgresql
                                     # (change requires restart)
 
-hostname0 = '192.168.99.45'
-wd_port0 = 9000
-pgpool_port0 = 9999
+{% for server in pgpool_backend_servers %}
+hostname{{ loop.index0 }} = {{ server.hostname | mandatory }}
+pgpool_port{{ loop.index0 }} = {{ server.port | default(pgpool_port) }}
+wd_port{{ loop.index0 }} = {{ server.wd_port | default(pgpool_wd_port) }}
 
-hostname1 = '192.168.99.46'
-wd_port1 = 9000
-pgpool_port1 = 9999
-
-hostname2 = '192.168.99.47'
-wd_port2 = 9000
-pgpool_port2 = 9999
-
+{% endfor %}
 # - Virtual IP control Setting -
 
 delegate_IP = '{{ pgpool_delegate_IP }}'
@@ -710,8 +704,10 @@ wd_heartbeat_deadtime = {{ pgpool_wd_heartbeat_deadtime }}
 {% if pgpool_heartbeat_destination | length > 0 %}
 {% for server in pgpool_heartbeat_destination %}
 heartbeat_hostname{{ loop.index0 }} = '{{ server.hostname | mandatory }}'
+heartbeat_destination{{ loop.index0 }} = '{{ server.hostname | mandatory }}'
 heartbeat_port{{ loop.index0 }} = '{{ server.port | default(pgpool_wd_heartbeat_port) }}'
-heartbeat_device{{ loop.index0 }} = ''
+heartbeat_destination_port{{ loop.index0 }} = '{{ server.port | default(pgpool_wd_heartbeat_port) }}'
+heartbeat_device{{ loop.index0 }} = 'eth0'
 {% endfor %}
 {% endif %}
 

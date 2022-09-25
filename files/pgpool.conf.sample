@@ -76,7 +76,7 @@ backend_data_directory0 = '/var/lib/pgsql/data'
 backend_flag0 = 'ALLOW_TO_FAILOVER'
                                    # Controls various backend behavior
                                    # ALLOW_TO_FAILOVER, DISALLOW_TO_FAILOVER
-                                   # or ALWAYS_MASTER
+                                   # or ALWAYS_PRIMARY
 backend_application_name0 = 'server0'
                                    # walsender's application_name, used for "show pool_nodes" command
 #backend_hostname1 = 'host2'
@@ -314,16 +314,16 @@ load_balance_mode = off
                                    # (change requires restart)
 ignore_leading_white_space = on
                                    # Ignore leading white spaces of each query
-white_function_list = ''
+read_function_list = ''
                                    # Comma separated list of function names
                                    # that don't write to database
                                    # Regexp are accepted
-black_function_list = 'currval,lastval,nextval,setval'
+write_function_list = 'currval,lastval,nextval,setval'
                                    # Comma separated list of function names
                                    # that write to database
                                    # Regexp are accepted
 
-black_query_pattern_list = ''
+primary_routing_query_pattern_list = ''
                                    # Semicolon separated list of query patterns
                                    # that should be sent to primary node
                                    # Regexp are accepted
@@ -398,7 +398,7 @@ delay_threshold = 0
 
 # - Special commands -
 
-follow_master_command = ''
+follow_primary_command = ''
                                    # Executes this command after master failover
                                    # Special values:
                                    #   %d = failed node id
@@ -692,7 +692,7 @@ heartbeat_destination0 = 'host0_ip1'
                                     # Host name or IP address of destination 0
                                     # for sending heartbeat signal.
                                     # (change requires restart)
-heartbeat_destination_port0 = 9694 
+heartbeat_destination_port0 = 9694
                                     # Port number of destination 0 for sending
                                     # heartbeat signal. Usually this is the
                                     # same as wd_heartbeat_port.

@@ -123,10 +123,10 @@
     group: "{{ pgpool_group }}"
     mode: 0600
 
-# - name: Configure | Generate pool_passwd file using md5 auth method
-#   shell:
-#     cmd: |
-#       pg_md5 --md5auth --username={{ item.username }} {{ item.password }}
-#   loop: "{{ pgpool_passwd_users_md5 }}"
-#   when: pgpool_passwd_use_md5 | bool
-#   become_user: "{{ pgpool_user }}"
+- name: Configure | Generate pool_passwd file using md5 auth method
+  shell:
+    cmd: |
+      pg_md5 --md5auth --username={{ item.username }} {{ item.password }}
+  loop: "{{ pgpool_passwd_users_md5 }}"
+  when: pgpool_passwd_use_md5 | bool
+  become_user: "{{ pgpool_user }}"

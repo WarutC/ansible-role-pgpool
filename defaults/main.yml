@@ -147,7 +147,7 @@ pgpool_syslog_facility: LOCAL0
 pgpool_syslog_ident: pgpool
 # Debug
 pgpool_log_error_verbosity: default
-pgpool_client_min_messages: debug1
+pgpool_client_min_messages: error
 pgpool_log_min_messages: warning
 
 # FILE LOCATIONS
@@ -170,9 +170,9 @@ pgpool_failover_if_affected_tuples_mismatch: 'off'
 # LOAD BALANCING MODE
 pgpool_load_balance_mode: 'off'
 pgpool_ignore_leading_white_space: 'on'
-pgpool_white_function_list: ''
-pgpool_black_function_list: currval,lastval,nextval,setval
-pgpool_black_query_pattern_list: ''
+pgpool_read_function_list: ''
+pgpool_write_function_list: currval,lastval,nextval,setval
+pgpool_primary_routing_query_pattern_list: ''
 pgpool_database_redirect_preference_list: ''
 pgpool_app_name_redirect_preference_list: ''
 pgpool_allow_sql_comments: 'off'
@@ -190,7 +190,7 @@ pgpool_sr_check_database: ''
 pgpool_delay_threshold: 10000000
 # Special commands
 pgpool_follow_master_template: scripts/follow_master.repmgr.sh.j2
-pgpool_follow_master_command:
+pgpool_follow_primary_command:
 
 # HEALTH CHECK GLOBAL PARAMETERS
 pgpool_health_check_period: 0
